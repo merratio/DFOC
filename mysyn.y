@@ -310,8 +310,28 @@ statements:
 
 statement: /*each function call checks to make sure the states and the characters being used were defined in the description 
 	     as being apart of the set of states and alphabet respectively*/
+	DELTA OBRACE IDEN COMMA CHAR EBRACE //syntactic sugar
+	{
+		if(getState($3) == -1){
+			printf("%s was not declared as a state in the dfa description above\n", $3);
+			YYABORT;
+		}
 
-	DELTA OBRACE IDEN COMMA CHAR EBRACE EQUALSIGN IDEN
+		if(getChar($5) == -1){
+			printf("%c was not defined in the alphabet in the dfa description above\n", $5);
+			YYABORT;
+		}
+		
+		if(getTrans($3,$5) != -1){
+                        printf("Transition already exists.Cannot have multiple\n");
+                        YYABORT;
+                }
+
+
+		addTrans($3, $5, $3);
+	}
+	
+	|DELTA OBRACE IDEN COMMA CHAR EBRACE EQUALSIGN IDEN
 	{
 		if(getState($3) == -1){
 			printf("%s was not declared as a state in the dfa description above\n", $3);

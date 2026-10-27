@@ -735,7 +735,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  15
+#define YYNRULES  16
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  46
 
@@ -789,7 +789,7 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,   205,   205,   222,   226,   230,   243,   247,   251,   264,
-     275,   279,   288,   307,   308,   314
+     275,   279,   288,   307,   308,   313,   334
 };
 #endif
 
@@ -849,7 +849,7 @@ static const yytype_int8 yydefact[] =
        0,     0,     3,     0,     0,     5,     7,     0,     0,     0,
        6,     0,     8,     0,     9,     0,     0,     0,     0,    11,
        0,    13,     0,    10,     0,     2,    13,    12,     0,    14,
-       0,     0,     0,     0,     0,    15
+       0,     0,     0,    15,     0,    16
 };
 
 /* YYPGOTO[NTERM-NUM].  */
@@ -904,14 +904,14 @@ static const yytype_int8 yystos[] =
 static const yytype_int8 yyr1[] =
 {
        0,    18,    19,    20,    21,    21,    22,    23,    23,    24,
-      25,    26,    26,    27,    27,    28
+      25,    26,    26,    27,    27,    28,    28
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,    14,     3,     1,     3,     3,     1,     3,     1,
-       3,     1,     3,     0,     2,     8
+       3,     1,     3,     0,     2,     6,     8
 };
 
 
@@ -1480,8 +1480,32 @@ yyreduce:
 #line 1481 "y.tab.c"
     break;
 
-  case 15: /* statement: DELTA OBRACE IDEN COMMA CHAR EBRACE EQUALSIGN IDEN  */
-#line 315 "mysyn.y"
+  case 15: /* statement: DELTA OBRACE IDEN COMMA CHAR EBRACE  */
+#line 314 "mysyn.y"
+        {
+		if(getState((yyvsp[-3].name)) == -1){
+			printf("%s was not declared as a state in the dfa description above\n", (yyvsp[-3].name));
+			YYABORT;
+		}
+
+		if(getChar((yyvsp[-1].val)) == -1){
+			printf("%c was not defined in the alphabet in the dfa description above\n", (yyvsp[-1].val));
+			YYABORT;
+		}
+		
+		if(getTrans((yyvsp[-3].name),(yyvsp[-1].val)) != -1){
+                        printf("Transition already exists.Cannot have multiple\n");
+                        YYABORT;
+                }
+
+
+		addTrans((yyvsp[-3].name), (yyvsp[-1].val), (yyvsp[-3].name));
+	}
+#line 1505 "y.tab.c"
+    break;
+
+  case 16: /* statement: DELTA OBRACE IDEN COMMA CHAR EBRACE EQUALSIGN IDEN  */
+#line 335 "mysyn.y"
         {
 		if(getState((yyvsp[-5].name)) == -1){
 			printf("%s was not declared as a state in the dfa description above\n", (yyvsp[-5].name));
@@ -1506,11 +1530,11 @@ yyreduce:
 
 		addTrans((yyvsp[-5].name), (yyvsp[-3].val), (yyvsp[0].name));
 	}
-#line 1510 "y.tab.c"
+#line 1534 "y.tab.c"
     break;
 
 
-#line 1514 "y.tab.c"
+#line 1538 "y.tab.c"
 
       default: break;
     }
@@ -1703,7 +1727,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 341 "mysyn.y"
+#line 361 "mysyn.y"
 
 
 int main(void){
