@@ -16,7 +16,6 @@
 ","                         return COMMA;
 =                           return EQUALSIGN;
 [a-zA-Z][a-zA-Z0-9]*        yylval.name= strdup(yytext);   return IDEN;
-[0-9]+                      return NUMBER;
 \n                                ;                 //ignores newline
 [ \t]+                            ;                 //ignores whitespaces
 "//".*                            ;  
