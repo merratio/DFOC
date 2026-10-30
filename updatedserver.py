@@ -75,7 +75,7 @@ class DFARequestHandler(http.server.SimpleHTTPRequestHandler):
 
         if not os.path.exists(DFAC_PATH):
             self.fail(500, "dfac binary not found. Compile it first, e.g. "
-                           "'yacc -d mysyn.y && lex <lexer>.l && gcc y.tab.c lex.yy.c -o dfac'")
+                           "'yacc -d mysyn.y && lex <lexer>.l && gcc y.tab.c lex.yy.c -o scanner'")
             return
 
         # Run dfac in its own temporary directory so that:
