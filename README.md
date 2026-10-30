@@ -51,7 +51,7 @@ DFOC uses Flex and Bison to generate its lexical and syntax analyzers from their
 Run the following command from the project root directory:
 
 ```bash
-.Makefile
+./Makefile
 ```
 
 This executes the commands defined in the project's `Makefile` and generates the required analyzer files.
