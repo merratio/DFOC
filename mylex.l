@@ -6,6 +6,8 @@
 //This file contains the tokens to be returned to the parser once recognized
 %}
 
+%option yylineno
+
 %%
 δ                           return DELTA;
 \{                          return OCURLY;

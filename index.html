@@ -268,12 +268,11 @@
       );
     }
 
-    function ResultPane({ svg, dot, json, stale, diagramError, onClose }) {
+    function ResultPane({ svg, dot, stale, diagramError, onClose }) {
       const [tab, setTab] = useState("diagram");
       const tabs = [
         { id: "diagram", label: "Diagram" },
         { id: "dot", label: "DOT" },
-        { id: "json", label: "JSON" },
       ];
 
       return (

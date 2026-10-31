@@ -76,6 +76,7 @@ void initStart(char *state){
 
 //implicit definition of function to handle errors
 void yyerror(const char *);
+extern int yylineno;
 
 
 //function to search for character in symbol table
@@ -266,7 +267,8 @@ final_list:/*Checks to make sure final state set is made up of elements from sta
         IDEN
 	{
                 if(getState($1) == - 1){
-                        yyerror("Final state not found\n");
+			yyerror("Definition error");
+			printf("Final state %s not found\n", $1);
                         YYABORT;
                 }
 		addFinalStates($1);
@@ -275,7 +277,8 @@ final_list:/*Checks to make sure final state set is made up of elements from sta
         |IDEN COMMA final_list
         {
                 if(getState($1) == -1){
-                        yyerror("Final state not found\n");
+                        yyerror("Definition error");
+			printf("Final state %s not found\n", $1);
                         YYABORT;
                 }
 
@@ -300,17 +303,17 @@ statement: /*each function call checks to make sure the states and the character
 	DELTA OBRACE IDEN COMMA CHAR EBRACE //syntactic sugar
 	{
 		if(getState($3) == -1){
-			printf("%s was not declared as a state in the dfa description above\n", $3);
+			yyerror(strcat($3," was not declared as a state in the dfa description above\n"));
 			YYABORT;
 		}
 
 		if(getChar($5) == -1){
-			printf("%c was not defined in the alphabet in the dfa description above\n", $5);
+			yyerror("A character was not defined in the alphabet in the dfa description above\n");
 			YYABORT;
 		}
 		
 		if(getTrans($3,$5) != -1){
-                        printf("Transition already exists.Cannot have multiple\n");
+                        yyerror("Transition already exists.Cannot have multiple\n");
                         YYABORT;
                 }
 
@@ -321,22 +324,22 @@ statement: /*each function call checks to make sure the states and the character
 	|DELTA OBRACE IDEN COMMA CHAR EBRACE EQUALSIGN IDEN
 	{
 		if(getState($3) == -1){
-			printf("%s was not declared as a state in the dfa description above\n", $3);
+			yyerror(strcat($3, " was not declared as a state in the dfa description above\n"));
 			YYABORT;
 		}
 
 		if(getChar($5) == -1){
-			printf("%c was not defined in the alphabet in the dfa description above\n", $5);
+			yyerror("A character was not defined in the alphabet in the dfa description above\n");
 			YYABORT;
 		}
 		
 		if(getState($8) == -1){
-                        printf("%s was not declared as a state in the dfa description above\n", $8);
+                        yyerror(strcat($8, " was not declared as a state in the dfa description above\n"));
                         YYABORT;
                 }
 
 		if(getTrans($3,$5) != -1){
-                        printf("Transition already exists.Cannot have multiple\n");
+                        yyerror("Transition already exists.Cannot have multiple\n");
                         YYABORT;
                 }
 
@@ -368,7 +371,7 @@ int main(void){
 }
 
 void yyerror(const char *s){
-	fprintf(stderr, "error: %s\n", s);
+	fprintf(stderr, "error: %s(line %d)\n", s, yylineno);
 
 }
 
