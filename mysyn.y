@@ -125,7 +125,7 @@ int checkComplete(){
 	for(int i = 0; i < dfa.state_count; i++){
 		for(int j = 0; j < dfa.alpha_count; j++){
 			if(getTrans(dfa.states[i].name, dfa.alphabet[j].val) == -1){
-				printf("Missing transition: delta(%s, %c)\n", dfa.states[i].name, dfa.alphabet[j].val);
+				printf("Missing transition: δ(%s, %c)\n", dfa.states[i].name, dfa.alphabet[j].val);
 				complete = 0;
 			}
 		}
@@ -203,19 +203,6 @@ int yylex();
 %%
 /*This file contains the grammar of the language and some static semantic for simple functionality*/
 program: IDEN EQUALSIGN OBRACE states COMMA alphabet COMMA DELTA COMMA start COMMA final EBRACE statements 
-	{
-		if(!checkComplete()){
-			printf("DFA is incomplete: not every state has a transition for every symbol\n");
-			YYABORT;
-		}
-		printf("DFA is valid and complete\n");
-		renderDFA("dfa.dot");
-		if(system("dot -Tsvg dfa.dot -o dfa.svg") == 0){
-    			printf("DFA diagram written to dfa.png (source: dfa.dot)\n");
-		}else{
-    			printf("Wrote dfa.dot. Install Graphviz and run: dot -Tsvg dfa.dot -o dfa.svg\n");
-		}
-	}
 	;
 
 states:
@@ -361,7 +348,23 @@ statement: /*each function call checks to make sure the states and the character
 %%
 
 int main(void){
-	yyparse();
+	if(yyparse() != 0){
+		return 1;	/* syntax error or YYABORT: nothing is rendered */
+	}
+ 
+	if(!checkComplete()){
+		printf("DFA is incomplete: not every state has a transition for every symbol\n");
+		return 1;
+	}
+ 
+	printf("DFA is valid and complete\n");
+	renderDFA("dfa_output.dot");
+	if(system("dot -Tsvg dfa_output.dot -o dfa_output.svg") == 0){
+		printf("DFA diagram written to dfa_output.svg (source: dfa_output.dot)\n");
+	}else{
+		printf("Wrote dfa_output.dot. Install Graphviz and run: dot -Tsvg dfa_output.dot -o dfa_output.svg\n");
+	}
+	return 0;
 }
 
 void yyerror(const char *s){
