@@ -403,7 +403,7 @@
             <span className="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to compile</span>
             <label className="toggle">
               <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} />
-              Compile as I type
+              Compile as you type
             </label>
             <button className="run" onClick={compile} disabled={status === "running"}>
               {status === "running" ? "Compiling…" : "Compile and render"}
