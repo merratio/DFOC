@@ -19,4 +19,5 @@
 \n                                ;                 //ignores newline
 [ \t]+                            ;                 //ignores whitespaces
 "//".*                            ;  
+.                           return yytext[0];
 %%
